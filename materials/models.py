@@ -1,4 +1,8 @@
+from django.conf import settings
 from django.db import models
+
+# from users.models import User
+
 
 # Create your models here.
 
@@ -13,6 +17,16 @@ class Course(models.Model):
         help_text="Загрузите миниатюру",
     )
     description = models.TextField(blank=True, null=True, verbose_name="Описание", help_text="Описание курса")
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
+        related_name="courses",
+        verbose_name="Модератор",
+        help_text="Модератор с правами доступа к курсам",
+    )
 
     class Meta:
         verbose_name = "Курс"
@@ -33,12 +47,22 @@ class Lesson(models.Model):
     preview = models.ImageField(
         upload_to="materials/lesson_preview",
         null=True,
-        blank=True,
+        blank=False,
         verbose_name="Предосмотр",
         help_text="Загрузите миниатюру",
     )
     video_url = models.TextField(
         blank=True, null=True, verbose_name="Ссылка на видео", help_text="Введите ссылку на видео урока"
+    )
+
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="lessons",
+        verbose_name="Модератор",
+        help_text="Модератор с правами доступа к урокам",
     )
 
     class Meta:
