@@ -1,10 +1,20 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
+# from rest_framework.serializers import ModelSerializer
 
 from materials.models import Course, Lesson
+from materials.validators import validate_url, validate_description
 
 
-class CourseSerializer(ModelSerializer):
+class LessonSerializer(serializers.ModelSerializer):
+    video_url = serializers.URLField(required=False, allow_null=True, validators=[validate_url])
+    description = serializers.CharField(validators=[validate_description])
+
+    class Meta:
+        model = Lesson
+        fields = "__all__"
+
+
+class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = "__all__"
@@ -15,7 +25,7 @@ class CourseSerializer(ModelSerializer):
         return super().create(validated_data)
 
 
-class LessonDetailSerializer(ModelSerializer):
+class LessonDetailSerializer(serializers.ModelSerializer):
     count_lessons_in_course = serializers.SerializerMethodField()
 
     def get_count_lessons_in_course(self, lesson):
@@ -43,11 +53,10 @@ class LessonDetailSerializer(ModelSerializer):
 #
 #     class Meta:
 #         model = Course
-#         fields = ("id", "name", "description", "lessons_in_course", )
+#         fields = ("id", "name", "description", "lessons_in_course")
 
 
-# TODO
-class CourseDetailSerializer(ModelSerializer):
+class CourseDetailSerializer(serializers.ModelSerializer):
     lessons_course = serializers.SerializerMethodField()
     count_lessons_in_course = serializers.SerializerMethodField()
 
@@ -56,9 +65,9 @@ class CourseDetailSerializer(ModelSerializer):
 
     def get_lessons_course(self, course):
         lessons = Lesson.objects.filter(course=course)
-        from .serializers import LessonSerializer
+        # from .serializers import LessonSerializer
 
-        return LessonSerializer(lessons, many=True).data
+        return serializers.LessonSerializer(lessons, many=True).data
 
     class Meta:
         model = Course
@@ -71,7 +80,3 @@ class CourseDetailSerializer(ModelSerializer):
         )
 
 
-class LessonSerializer(ModelSerializer):
-    class Meta:
-        model = Lesson
-        fields = "__all__"

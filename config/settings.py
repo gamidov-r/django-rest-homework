@@ -64,6 +64,11 @@ DATABASES = {
         "PASSWORD": os.getenv("PASSWORD"),
         "HOST": os.getenv("HOST"),
         "PORT": os.getenv("PORT"),
+        # 'TEST': {
+        #     'NAME': 'test_db',
+        #     'USER': 'test_user',
+        #     'PASSWORD': 'test_password',
+        # }
     }
 }
 

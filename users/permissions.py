@@ -8,11 +8,13 @@ class IsModer(permissions.BasePermission):
 
 class IsOwner(permissions.BasePermission):
     """ Проверка пользователя на владение объектом """
-    def has_permission(self, request, view, obj):
-        if obj.owner == request.user:
-            return True
-        return False
+    def has_object_permission(self, request, view, object):
+        return object.owner == request.user
 
+    # def has_permission(self, request, view, object):
+    #     if object.owner == request.user:
+    #         return True
+    #     return False
 
 
 
