@@ -51,8 +51,12 @@ class Lesson(models.Model):
         verbose_name="Предосмотр",
         help_text="Загрузите миниатюру",
     )
-    video_url = models.TextField(
-        blank=True, null=True, verbose_name="Ссылка на видео", help_text="Введите ссылку на видео урока"
+    video_url = models.URLField(
+        max_length=1024,
+        blank=True,
+        null=True,
+        verbose_name="Ссылка на видео",
+        help_text="Введите ссылку на видео урока",
     )
 
     owner = models.ForeignKey(
@@ -81,4 +85,4 @@ class Subscription(models.Model):
         verbose_name_plural = "subscriptions"
 
     def __str__(self):
-        return f"{self.user_id} -> {self.course_id}"
+        return f"{self.user} -> {self.course}"

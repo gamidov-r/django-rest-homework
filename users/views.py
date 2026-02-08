@@ -1,3 +1,4 @@
+from django.conf import settings
 from django_filters import CharFilter, ChoiceFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
@@ -5,8 +6,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from users.models import Payments, User
-from users.serializers import EmailTokenObtainPairSerializer, PaymentsSerializer, UserSerializer
+from materials.services import create_stripe_sessions
+from users.models import Payments, Transaction, User
+from users.serializers import EmailTokenObtainPairSerializer, PaymentsSerializer, TransactionSerializer, UserSerializer
+
+STRIPE_SECRET_KEY = settings.STRIPE_SECRET_KEY
+STRIPE_API_URL = settings.STRIPE_API_URL
 
 
 class UserViewSet(ModelViewSet):
@@ -16,6 +21,19 @@ class UserViewSet(ModelViewSet):
 
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = EmailTokenObtainPairSerializer
+
+
+class TransactionCreateAPIView(CreateAPIView):
+    serializer_class = TransactionSerializer
+    queryset = Transaction.objects.all()
+
+    def perform_create(self, serializer):
+        transaction = serializer.save(user=self.request.user)
+        # amount = transaction.amount
+        session, link = create_stripe_sessions(transaction.amount)
+        transaction.link = link
+        transaction.session_id = session
+        transaction.save()
 
 
 class UserCreateAPIView(CreateAPIView):

@@ -5,11 +5,14 @@ from rest_framework.test import APITestCase
 from materials.models import Course, Lesson
 from users.models import User
 
+
 class LessonTestCase(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(email="test@school.ru", password="test")
         self.course = Course.objects.create(name="Test Course", description="This is a test course")
-        self.lesson = Lesson.objects.create(course=self.course, name="Test Lesson", description="This is a test lesson", owner=self.user)
+        self.lesson = Lesson.objects.create(
+            course=self.course, name="Test Lesson", description="This is a test lesson", owner=self.user
+        )
         self.client.force_authenticate(user=self.user)
 
     def test_lesson_retrieve(self):
@@ -46,7 +49,11 @@ class LessonTestCase(APITestCase):
 
     def test_lesson_create_reject_video_url(self):
         url = reverse("materials:lessons_create")
-        data = {"name": "test lesson", "description": "test description", "video_url": "http://myvideohosting.ddns.net"}
+        data = {
+            "name": "test lesson",
+            "description": "test description",
+            "video_url": "http://myvideohosting.ddns.net",
+        }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # 2nd arg is host name from response message
@@ -60,5 +67,3 @@ class LessonTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # get and assert hosts from descriptions
         self.assertEqual(data["description"].split(" ")[1], response.json()["description"][0].split(" ")[1])
-
-

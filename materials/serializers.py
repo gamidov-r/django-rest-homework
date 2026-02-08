@@ -1,8 +1,9 @@
 from rest_framework import serializers
-# from rest_framework.serializers import ModelSerializer
 
 from materials.models import Course, Lesson
-from materials.validators import validate_url, validate_description
+from materials.validators import validate_description, validate_url
+
+# from rest_framework.serializers import ModelSerializer
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -21,7 +22,7 @@ class CourseSerializer(serializers.ModelSerializer):
         read_only_fields = ("owner",)
 
     def create(self, validated_data):
-        validated_data['owner'] = self.context['request'].user
+        validated_data["owner"] = self.context["request"].user
         return super().create(validated_data)
 
 
@@ -43,8 +44,9 @@ class LessonDetailSerializer(serializers.ModelSerializer):
         read_only_fields = ("owner",)
 
     def create(self, validated_data):
-        validated_data['owner'] = self.context['request'].user
+        validated_data["owner"] = self.context["request"].user
         return super().create(validated_data)
+
 
 # class CourseDetailSerializer(ModelSerializer):
 #     lessons_in_course = serializers.SerializerMethodField()
@@ -78,5 +80,3 @@ class CourseDetailSerializer(serializers.ModelSerializer):
             "count_lessons_in_course",
             "lessons_course",
         )
-
-

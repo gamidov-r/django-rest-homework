@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -7,8 +9,10 @@ from rest_framework.viewsets import ModelViewSet
 
 from materials.models import Course, Lesson, Subscription
 from materials.serializers import CourseDetailSerializer, CourseSerializer, LessonDetailSerializer, LessonSerializer
-from users.permissions import IsOwner, IsModer
+from users.permissions import IsModer, IsOwner
+
 from .paginations import CustomPagination
+
 
 class LessonViewSet(ModelViewSet):
     queryset = Lesson.objects.all()
@@ -59,12 +63,13 @@ class CourseViewSet(ModelViewSet):
 class LessonCreateAPIView(CreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = (~IsModer | IsOwner, )
+    permission_classes = (~IsModer | IsOwner,)
 
     def perform_create(self, serializer):
         course = serializer.save()
         course.owner = self.request.user
         course.save()
+
 
 class CourseCreateAPIView(CreateAPIView):
     queryset = Course.objects.all()
@@ -82,6 +87,7 @@ class LessonListAPIView(ListAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModer]
     pagination_class = CustomPagination
+
 
 class LessonRetrieveAPIView(RetrieveAPIView):
     queryset = Lesson.objects.all()
@@ -128,6 +134,7 @@ class CourseDestroyAPIView(DestroyAPIView):
 
 class SubscribeView(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request, pk):
         course = Course.objects.get(id=pk)
         Subscription.objects.get_or_create(user=request.user, course=course)
@@ -136,6 +143,7 @@ class SubscribeView(APIView):
 
 class UnSubscribeView(APIView):
     permission_classes = [IsAuthenticated]
+
     def delete(self, request, pk):
         Subscription.objects.filter(user=request.user, id=pk).delete()
         return Response({"detail": "unsubscribed"}, status=status.HTTP_204_NO_CONTENT)
