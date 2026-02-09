@@ -12,6 +12,7 @@ from materials.serializers import CourseDetailSerializer, CourseSerializer, Less
 from users.permissions import IsModer, IsOwner
 
 from .paginations import CustomPagination
+from .tasks import check_subscription
 
 
 class LessonViewSet(ModelViewSet):
@@ -124,6 +125,7 @@ class CourseUpdateAPIView(UpdateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = (IsAuthenticated, IsModer | IsOwner)
+    check_subscription.delay()
 
 
 class CourseDestroyAPIView(DestroyAPIView):
@@ -138,6 +140,7 @@ class SubscribeView(APIView):
     def post(self, request, pk):
         course = Course.objects.get(id=pk)
         Subscription.objects.get_or_create(user=request.user, course=course)
+        # add.delay()
         return Response({"detail": "subscribed"}, status=status.HTTP_201_CREATED)
 
 
@@ -146,4 +149,5 @@ class UnSubscribeView(APIView):
 
     def delete(self, request, pk):
         Subscription.objects.filter(user=request.user, id=pk).delete()
+        # add.delay()
         return Response({"detail": "unsubscribed"}, status=status.HTTP_204_NO_CONTENT)
