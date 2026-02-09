@@ -4,6 +4,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+
 load_dotenv(override=True)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -144,4 +145,4 @@ if CACHE_ENABLED:
 
 STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
-
+STRIPE_API_URL = os.getenv("STRIPE_API_URL")
