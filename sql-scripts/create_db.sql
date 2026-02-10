@@ -1,0 +1,7 @@
+CREATE USER homework;
+CREATE ROLE homework PASSWORD skypro;
+CREATE USER homework PASSWORD skypro;
+CREATE DATABASE rest;
+GRANT ALL PRIVILEGES ON DATABASE rest TO homework;
+ALTER DATABASE rest OWNER TO homework;
+ALTER USER homework SUPERUSER;

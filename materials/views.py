@@ -125,7 +125,7 @@ class CourseUpdateAPIView(UpdateAPIView):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     permission_classes = (IsAuthenticated, IsModer | IsOwner)
-    check_subscription.delay()
+    # check_subscription.delay()
 
 
 class CourseDestroyAPIView(DestroyAPIView):

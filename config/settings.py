@@ -61,12 +61,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("NAME"),
-        "USER": os.getenv("USER"),
-        "PASSWORD": os.getenv("PASSWORD"),
-        "HOST": os.getenv("HOST"),
-        "PORT": os.getenv("PORT"),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'rest'),
+        'USER': os.getenv('DB_USER', 'homework'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'skypro'),
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),  # Используем имя контейнера
+        'PORT': os.getenv('DATABASE_PORT', '5432'),
     }
 }
 
