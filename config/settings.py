@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = eval(os.getenv("DEBUG"))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1', 'web', 'nginx', 'django-web']
 
 # Application definition
 
@@ -65,7 +65,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', 'rest'),
         'USER': os.getenv('DB_USER', 'homework'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'skypro'),
-        'HOST': os.getenv('DATABASE_HOST', 'localhost'),  # Используем имя контейнера
+        'HOST': os.getenv('DATABASE_HOST', 'pg_db'),  # Используем имя контейнера
         'PORT': os.getenv('DATABASE_PORT', '5432'),
     }
 }
@@ -110,14 +110,13 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-
-STATICFILES_DIRS = (BASE_DIR / "static",)
-
+#STATICFILES_DIRS = [] #BASE_DIR / "statics"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-MEDIA_URL = "media/"
-
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+MEDIA_URL = "/media/"
+
 
 AUTH_USER_MODEL = "users.User"
 
